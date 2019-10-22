@@ -4,8 +4,9 @@ describe 'GildedRose' do
   before(:each) do
     items = [
       Item.new("Invisibility Cloak", 10, 20),
+      Item.new("Elixir", -1, 7),
+      Item.new("Chalice", 5, 0),
       Item.new("Aged Brie", 2, 0),
-      Item.new("Elixir", 5, 7),
       Item.new("Sulfuras", 0, 50),
       Item.new("Backstage Pass", 15, 20),
       Item.new("Conjured Potato", 3, 40)
@@ -18,9 +19,13 @@ describe 'GildedRose' do
     expect { @gr.update_quality }.to change { @gr.items[0].quality }.by(-1)
   end
 
-  # it 'notes that degradation rate doubles after sell-by date' do
-  #
-  # end
+  it 'notes that degradation rate doubles after sell-by date' do
+    expect { @gr.update_quality }.to change { @gr.items[1].quality }.by(-2)
+  end
+
+  it 'does not allow quality to be negative' do
+    expect { @gr.update_quality }.not_to change { @gr.items[2].quality }
+  end
 end
 
 # Once the sell by date has passed, Quality degrades twice as fast
