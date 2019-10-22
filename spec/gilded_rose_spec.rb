@@ -30,9 +30,13 @@ describe 'GildedRose' do
   it 'increases the quality metric for brie' do
     expect { @gr.update_quality }.to change { @gr.items[3].quality }.by(1)
   end
+
+  it 'does not allow quality to exceed 50' do
+    @gr.update_quality
+    expect { @gr.update_quality }.not_to change { @gr.items[2].quality }
+  end
 end
 
-# “Aged Brie” actually increases in Quality the older it gets
 # The Quality of an item is never more than 50
 # “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality
 # “Backstage passes”, like aged brie, increases in Quality as it’s SellIn value approaches; Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but Quality drops to 0 after the concert
