@@ -8,8 +8,10 @@ describe 'GildedRose' do
       Item.new("Chalice", 5, 0),
       Item.new("Aged Brie", 50, 49),
       Item.new("Sulfuras", 0, 50),
-      Item.new("Backstage Pass", 15, 20),
-      Item.new("Conjured Potato", 3, 40)
+      Item.new("Backstage Pass", 9, 20),
+      Item.new("Backstage Pass", 4, 20),
+      Item.new("Backstage Pass", 0, 20),
+      Item.new("Conjured Potato", 5, 40)
     ]
     @gr = GildedRose.new(items)
   end
@@ -33,10 +35,27 @@ describe 'GildedRose' do
 
   it 'does not allow quality to exceed 50' do
     @gr.update_quality
-    expect { @gr.update_quality }.not_to change { @gr.items[2].quality }
+    expect { @gr.update_quality }.not_to change { @gr.items[3].quality }
+  end
+
+  it 'does not change the status of Sulfuras' do
+    expect { @gr.update_quality }.not_to change { @gr.items[4].sell_in }
+    expect { @gr.update_quality }.not_to change { @gr.items[4].quality }
+  end
+
+  it 'raises quality by 2 for backstage passes for concerts in 10 days or less' do
+    expect { @gr.update_quality }.to change { @gr.items[5].quality }.by(2)
+  end
+
+  it 'raises quality by 3 for backstage passes for concerts in 5 days or less' do
+    expect { @gr.update_quality }.to change { @gr.items[6].quality }.by(3)
+  end
+
+  it 'sets the quality of a backstage pass to 0 after the concert' do
+    expect { @gr.update_quality }.to change { @gr.items[7].quality }.to(0)
+  end
+
+  it 'accounts for the double degradation rate of conjured items' do
+    expect { @gr.update_quality }.to change { @gr.items[8].quality }.by(-2)
   end
 end
-
-# The Quality of an item is never more than 50
-# “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality
-# “Backstage passes”, like aged brie, increases in Quality as it’s SellIn value approaches; Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but Quality drops to 0 after the concert
