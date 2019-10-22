@@ -6,7 +6,7 @@ describe 'GildedRose' do
       Item.new("Invisibility Cloak", 10, 20),
       Item.new("Elixir", -1, 7),
       Item.new("Chalice", 5, 0),
-      Item.new("Aged Brie", 2, 0),
+      Item.new("Aged Brie", 50, 49),
       Item.new("Sulfuras", 0, 50),
       Item.new("Backstage Pass", 15, 20),
       Item.new("Conjured Potato", 3, 40)
@@ -26,10 +26,12 @@ describe 'GildedRose' do
   it 'does not allow quality to be negative' do
     expect { @gr.update_quality }.not_to change { @gr.items[2].quality }
   end
+
+  it 'increases the quality metric for brie' do
+    expect { @gr.update_quality }.to change { @gr.items[3].quality }.by(1)
+  end
 end
 
-# Once the sell by date has passed, Quality degrades twice as fast
-# The Quality of an item is never negative
 # “Aged Brie” actually increases in Quality the older it gets
 # The Quality of an item is never more than 50
 # “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality

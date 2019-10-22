@@ -2,6 +2,7 @@ class GildedRose
   attr_reader :items
 
   MINIMUM_QUALITY = 0
+  MAXIMUM_QUALITY = 50
 
   def initialize(items)
     @items = items
@@ -10,40 +11,32 @@ class GildedRose
   def update_quality()
     @items.each do |item|
       update_sell_in(item)
+
       if item.name != "Aged Brie" and item.name != "Backstage Pass"
-        if item.quality > 0
-          depreciate(item)
-        end
+        depreciate(item)
       else
-        if item.quality < 50
-          item.quality = item.quality + 1
-          if item.name == "Backstage Pass"
-            if item.sell_in < 11
-              if item.quality < 50
-                item.quality = item.quality + 1
-              end
+        appreciate(item)
+        if item.name == "Backstage Pass"
+          if item.sell_in < 11
+            if item.quality < 50
+              item.quality = item.quality + 1
             end
-            if item.sell_in < 6
-              if item.quality < 50
-                item.quality = item.quality + 1
-              end
-            end
+          end
+          if item.sell_in < 6
+            appreciate(item)
           end
         end
       end
+      
       if item.sell_in < 0
         if item.name != "Aged Brie"
           if item.name != "Backstage Pass"
-            if item.quality > 0
-              depreciate(item)
-            end
+            depreciate(item)
           else
             item.quality = item.quality - item.quality
           end
         else
-          if item.quality < 50
-            item.quality = item.quality + 1
-          end
+          appreciate(item)
         end
       end
     end
@@ -59,6 +52,10 @@ class GildedRose
 
   def depreciate(item)
     item.quality -= 1 if item.quality > MINIMUM_QUALITY
+  end
+
+  def appreciate(item)
+    item.quality += 1 if item.quality < MAXIMUM_QUALITY
   end
 end
 
